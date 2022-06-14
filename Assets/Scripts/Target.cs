@@ -1,7 +1,37 @@
 using UnityEngine;
 
+class UserSystem : IEcsPreInitSystem, IEcsInitSystem, IEcsRunSystem, IEcsDestroySystem, IEcsPostDestroySystem
+{
+    public void PreInit(EcsSystems systems)
+    {
+        // Будет вызван один раз в момент работы EcsSystems.Init() и до срабатывания IEcsInitSystem.Init().
+    }
+
+    public void Init(EcsSystems systems)
+    {
+        // Будет вызван один раз в момент работы EcsSystems.Init() и после срабатывания IEcsPreInitSystem.PreInit().
+    }
+
+    public void Run(EcsSystems systems)
+    {
+        // Будет вызван один раз в момент работы EcsSystems.Run().
+    }
+
+    public void Destroy(EcsSystems systems)
+    {
+        // Будет вызван один раз в момент работы EcsSystems.Destroy() и до срабатывания IEcsPostDestroySystem.PostDestroy().
+    }
+
+    public void PostDestroy(EcsSystems systems)
+    {
+        // Будет вызван один раз в момент работы EcsSystems.Destroy() и после срабатывания IEcsDestroySystem.Destroy().
+    }
+}
+
 public class Target : MonoBehaviour
 {
+
+
     private Rigidbody targetRB;
     private GameManager gameManager; 
 
