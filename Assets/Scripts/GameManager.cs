@@ -1,54 +1,55 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro; // библиотека с текстом
-using UnityEngine.SceneManagement; // библиотека сцен, чтобы включать сцены(уровни)
-using UnityEngine.UI; // библиотека интерфейсов, чтобы работать с кнопками
+using TMPro; 
+using UnityEngine.SceneManagement; // библиотека сцен 
+using UnityEngine.UI; 
 
 public class GameManager : MonoBehaviour
 {
-    public List<GameObject> targets; // переменная лист таргертов
-    public TextMeshProUGUI scoreText;
-    public TextMeshProUGUI gameOverText;
-    public Button restartButton;
-    public GameObject titleScreen;
-    private int score;
+    public List<GameObject> Targets; // переменная лист таргертов
+    public TextMeshProUGUI ScoreText;
+    public TextMeshProUGUI GameOverText;
+    public Button RestartButton;
+    public GameObject TitleScreen;
+    public bool IsGameActive;
 
-    private float spawnRate = 1.0f;
-    public bool isGameActive;
+    private int _score;
+    private float _spawnRate = 1.0f;
+    
 
     public void StartGame(int difficulty)
     {
-        isGameActive = true;
+        IsGameActive = true;
         StartCoroutine(SpawnTarget()); // запускаем итератор
         UpdateScore(0);
-        spawnRate /= difficulty;
-        titleScreen.gameObject.SetActive(false);
+        _spawnRate /= difficulty;
+        TitleScreen.gameObject.SetActive(false);
     }
     IEnumerator SpawnTarget() // итератор 
     {
-        while (isGameActive) // оператор итераций
+        while (IsGameActive) // оператор итераций
         {
-            yield return new WaitForSeconds(spawnRate); // yield возвращает значение итерации через указанное время
-            int index = Random.Range(0, targets.Count); // переменная индекс рандомная от значения 0 до длинны листа
-            Instantiate(targets[index]); // спавн из листа Targets
+            yield return new WaitForSeconds(_spawnRate); // yield возвращает значение итерации через указанное время
+            int index = Random.Range(0, Targets.Count); // переменная индекс рандомная от значения 0 до длинны листа
+            Instantiate(Targets[index]); // спавн из листа Targets
         }
     }
 
     public void UpdateScore(int scoreToAdd)
     {
-        score += scoreToAdd;
-        scoreText.text = "Score: " + score;
+        _score += scoreToAdd;
+        ScoreText.text = "Score: " + _score;
     }
 
     public void GameOver()
     {
-        gameOverText.gameObject.SetActive(true); // активируем надпись геймовер
-        restartButton.gameObject.SetActive(true);
-        isGameActive = false;
+        GameOverText.gameObject.SetActive(true); // активируем надпись геймовер
+        RestartButton.gameObject.SetActive(true);
+        IsGameActive = false;
     }
 
-    public void RestartGame()
+    private void RestartGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }

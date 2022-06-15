@@ -1,89 +1,61 @@
 using UnityEngine;
 
-class UserSystem : IEcsPreInitSystem, IEcsInitSystem, IEcsRunSystem, IEcsDestroySystem, IEcsPostDestroySystem
-{
-    public void PreInit(EcsSystems systems)
-    {
-        // Будет вызван один раз в момент работы EcsSystems.Init() и до срабатывания IEcsInitSystem.Init().
-    }
-
-    public void Init(EcsSystems systems)
-    {
-        // Будет вызван один раз в момент работы EcsSystems.Init() и после срабатывания IEcsPreInitSystem.PreInit().
-    }
-
-    public void Run(EcsSystems systems)
-    {
-        // Будет вызван один раз в момент работы EcsSystems.Run().
-    }
-
-    public void Destroy(EcsSystems systems)
-    {
-        // Будет вызван один раз в момент работы EcsSystems.Destroy() и до срабатывания IEcsPostDestroySystem.PostDestroy().
-    }
-
-    public void PostDestroy(EcsSystems systems)
-    {
-        // Будет вызван один раз в момент работы EcsSystems.Destroy() и после срабатывания IEcsDestroySystem.Destroy().
-    }
-}
-
 public class Target : MonoBehaviour
 {
 
 
-    private Rigidbody targetRB;
-    private GameManager gameManager; 
+    private Rigidbody _targetRB;
+    private GameManager _gameManager; 
 
-    private float minSpeed = 10;
-    private float maxSpeed = 14;
-    private float maxTorque = 10;
-    private float xRange = 4;
-    private float ySpawnPos = 1;
+    private float _minSpeed = 10;
+    private float _maxSpeed = 14;
+    private float _maxTorque = 10;
+    private float _xRange = 4;
+    private float _ySpawnPos = 1;
 
-    public ParticleSystem explosionParticle;
-    public int pointValue;
+    public ParticleSystem ExplosionParticle;
+    public int PointValue;
 
     private void Start()
     {
-        targetRB = gameObject.GetComponent<Rigidbody>();
-        gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();       //обращаемся к скрипту Game Manager 
-        targetRB.AddForce(RandomForce(), ForceMode.Impulse);                             //сила, подкидывающая предметы
-        targetRB.AddTorque(RandomTorque(), RandomTorque(), RandomTorque(), ForceMode.Impulse); //сила, крутящая предметы в полёте
+        _targetRB = gameObject.GetComponent<Rigidbody>();
+        _gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();       //обращаемся к скрипту Game Manager 
+        _targetRB.AddForce(RandomForce(), ForceMode.Impulse);                             //сила, подкидывающая предметы
+        _targetRB.AddTorque(RandomTorque(), RandomTorque(), RandomTorque(), ForceMode.Impulse); //сила, крутящая предметы в полёте
 
         transform.position = RandomPos();
     }
 
     private void OnMouseDown() 
     {
-        if (gameManager.isGameActive)
+        if (_gameManager.IsGameActive)
         {
             Destroy(gameObject);
-            gameManager.UpdateScore(pointValue); //каждый удачный клик прибавляем очки
-            Instantiate(explosionParticle, transform.position, explosionParticle.transform.rotation);
+            _gameManager.UpdateScore(PointValue); //каждый удачный клик прибавляем очки
+            Instantiate(ExplosionParticle, transform.position, ExplosionParticle.transform.rotation);
         }
     }
 
-    private void OnTriggerEnter(Collider other) //уничтожаем обьекты, когда они касаются триггера внизу
+    private void OnTriggerEnter(Collider _other) //уничтожаем обьекты, когда они касаются триггера внизу
     {
         Destroy(gameObject);
         if (!gameObject.CompareTag("Bad"))
         {
-            gameManager.GameOver();
+            _gameManager.GameOver();
         }
     }
     Vector3 RandomForce()
     {
-        return Vector3.up * Random.Range(minSpeed, maxSpeed);
+        return Vector3.up * Random.Range(_minSpeed, _maxSpeed);
     }
 
     float RandomTorque()
     {
-        return Random.Range(-maxTorque, maxTorque);
+        return Random.Range(-_maxTorque, _maxTorque);
     }
 
     Vector3 RandomPos()
     {
-        return new Vector3(Random.Range(-xRange, xRange), ySpawnPos, 0);
+        return new Vector3(Random.Range(-_xRange, _xRange), _ySpawnPos, 0);
     }
 }
